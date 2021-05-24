@@ -1,0 +1,32 @@
+IMAGE_NAME="test-image"
+CONTAINER_NAME="test-container"
+echo "Check current working directory"
+pwd
+echo "Build docker image and run container"
+docker build -t $IMAGE_NAME --build-arg PY_VERSION=${versions}  .
+docker run -d --name $CONTAINER_NAME $IMAGE_NAME
+echo "Copy result.xml into Jenkins container"
+rm -rf reports; mkdir reports
+docker cp $CONTAINER_NAME:/python-test-calculator/reports/result.xml "reports/result_${BUILD_NUMBER}.xml"
+echo "Cleanup"
+docker stop $CONTAINER_NAME
+docker rm $CONTAINER_NAME
+docker rmi $IMAGE_NAME
+
+
+
+
+...
+junit:
+
+reports/result*.xml
+
+
+--
+docker run -d -p 8080:8080 --name jenkins-docker-container -v /var/run/docker.sock:/var/run/docker.sock jenkins-docker
+docker exec -it jenkins-docker-container cat var/jenkins_home/secrets/initialAdminPassword 
+
+--
+axis:
+
+versions: 3.6 3.7
