@@ -1,6 +1,5 @@
-FROM python:3.6-slim
-
-MAINTAINER varunkumar032@gmail.com
+ARG PY_VERSION=3.6
+FROM python:$PY_VERSION-slim
 
 COPY . /python-test-calculator
 
