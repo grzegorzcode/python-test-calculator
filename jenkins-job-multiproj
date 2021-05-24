@@ -30,3 +30,15 @@ docker exec -it jenkins-docker-container cat var/jenkins_home/secrets/initialAdm
 axis:
 
 versions: 3.6 3.7
+
+
+---------deploy
+docker run -dit --name deploy_server centos
+docker exec -it deploy_server /bin/bash
+yum install openssh-server.x86_64 vim openssh-clients.x86_64
+ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
+ssh-keygen -t dsa -f /etc/ssh/ssh_host_dsa_key -N ''
+echo root:welcome1 | chpasswd
+/usr/sbin/sshd -D
+
+-send builds artifacts over SSH  (** as source files)
